@@ -1,4 +1,4 @@
-import dine from "../assets/Dine.jpg";
+import dine from "../assets/tab.jpg";
 import "../styles/LandingPage.css";
 
 export default function LandingPage() {

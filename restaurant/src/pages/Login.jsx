@@ -93,7 +93,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { apiPostForm } from "../api/api";
 import { AuthContext } from "../context/AuthContext";
 import { useEffect } from "react";
-import dine2 from "../assets/dine2.jpg";
+import dine2 from "../assets/tab1.jpg";
 import "../styles/Auth.css";
 
 export default function Login() {
