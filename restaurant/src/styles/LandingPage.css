@@ -1,0 +1,50 @@
+/* Make sure body takes full height */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* HERO SECTION */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;              /* FULL SCREEN */
+  background-size: cover;     /* COVER ENTIRE AREA */
+  background-position: center;
+  background-repeat: no-repeat;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* DARK OVERLAY */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* TEXT CONTENT */
+.hero-content {
+  position: relative;         /* ABOVE OVERLAY */
+  text-align: center;
+  color: white;
+  padding: 20px;
+}
+
+.hero-content h1 {
+  font-size: 3.5rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.hero-content h1 span {
+  color: #facc15;             /* yellow */
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}

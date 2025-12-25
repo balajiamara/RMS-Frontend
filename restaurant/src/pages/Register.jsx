@@ -29,7 +29,7 @@ export default function Register() {
 
       await apiPostForm("auth/register/", form); // -> /add_user/
       setMsg("Registration successful! Redirecting to login...");
-      setTimeout(() => navigate("/login"), 1200);
+      setTimeout(() => navigate("/login", {replace:true}), 1200);
     } catch (err) {
       setMsg(err.data?.error || err.message || "Registration failed");
     } finally {

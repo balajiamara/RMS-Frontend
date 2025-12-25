@@ -68,27 +68,27 @@
 // }
 
 
-
 import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function Home() {
-  const { user, setUser } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const nav = useNavigate();
   const isAdmin = user?.role?.toLowerCase() === "admin";
 
-  function handleLogout() {
-    // clear auth data
-    localStorage.removeItem("token");
-    localStorage.removeItem("auth_user");
+  useEffect(() => {
+    // prevent going back
+    window.history.pushState(null, "", window.location.href);
 
-    // clear context
-    setUser(null);
+    const handlePopState = () => {
+      window.history.pushState(null, "", window.location.href);
+    };
 
-    // redirect to login
-    nav("/login");
-  }
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   return (
     <div style={{ padding: 20 }}>
@@ -104,35 +104,26 @@ export default function Home() {
           <h1>Welcome {user?.username}</h1>
           <p>Role: {user?.role}</p>
         </div>
-
-        {/* 🔴 Logout Button */}
-        <button
-          onClick={handleLogout}
-          style={{
-            padding: "8px 14px",
-            background: "#dc3545",
-            color: "white",
-            border: "none",
-            borderRadius: 5,
-            cursor: "pointer",
-          }}
-        >
-          Logout
-        </button>
       </div>
 
       <div style={{ display: "flex", gap: 12 }}>
         {isAdmin ? (
           <>
-            <button onClick={() => nav("/manage_users")}>View Users</button>
-            <button onClick={() => nav("/menu")}>View Menu</button>
+            <button onClick={() => nav("/manage_users")}>
+              View Users
+            </button>
+            <button onClick={() => nav("/menu")}>
+              View Menu
+            </button>
           </>
         ) : (
           <>
             <button onClick={() => nav(`/editusers/${user.userid}`)}>
               Update My Details
             </button>
-            <button onClick={() => nav("/menu")}>View Menu</button>
+            <button onClick={() => nav("/menu")}>
+              View Menu
+            </button>
           </>
         )}
       </div>

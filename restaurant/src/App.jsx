@@ -76,12 +76,80 @@
 
 
 
+// import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+// import Login from "./pages/Login.jsx";
+// import Home from "./pages/Home.jsx";
+// import Register from "./pages/Register.jsx";
+// import ProtectedRoute from "./pages/ProtectedRoute.jsx";
+// import AuthProvider from "./context/AuthProvider.jsx";
+// import MenuPage from "./pages/Menu.jsx";
+// import AddDish from "./pages/AddDish.jsx";
+// import EditDish from "./pages/EditDish.jsx";
+// import EditUser from "./pages/EditUsers.jsx";
+// import ViewDish from "./pages/ViewDish.jsx";
+// import ManageUsers from "./pages/ManageUsers.jsx";
+// import CartPage from "./pages/Cart.jsx";
+// import Checkout from "./pages/Checkout.jsx";
+// import AskAI from "./pages/AskAI.jsx";
+
+// function App() {
+//   return (
+//     <AuthProvider>
+//       <BrowserRouter>
+//         <Routes>
+//           {/* default -> go to /login */}
+//           <Route path="/" element={<Navigate to="/login" replace />} />
+
+//           {/* public routes */}
+//           <Route path="/login" element={<Login />} />
+//           <Route path="/register" element={<Register />} />
+
+//           {/* optional aliases so backend-like paths work in frontend */}
+//           <Route path="/login_user" element={<Login />} />
+//           <Route path="/register_user" element={<Register />} />
+
+//           {/* protected */}
+//           <Route
+//             path="/home"
+//             element={
+//               <ProtectedRoute>
+//                 <Home />
+//               </ProtectedRoute>
+//             }
+//           />
+//           <Route path="/menu" element={<ProtectedRoute><MenuPage/></ProtectedRoute>} />
+//           <Route path="/add_item" element={<ProtectedRoute><AddDish/></ProtectedRoute>} />
+//           <Route path="/modify_item/:id" element={<ProtectedRoute><EditDish/></ProtectedRoute>} />
+//           <Route path="/view_item/:id" element={<ViewDish />} />
+//           <Route path="/manage_users" element={<ManageUsers />} />
+//           <Route path="/editusers/:id" element={<EditUser/>}/>
+//           <Route path="/cart" element={<CartPage />} />
+//           <Route path="/checkout" element={<Checkout />} />
+//           <Route path="/ask-ai" element={<AskAI />} />
+
+
+
+//           {/* fallback */}
+//           <Route path="*" element={<Navigate to="/" replace />} />
+//         </Routes>
+//       </BrowserRouter>
+//     </AuthProvider>
+//   );
+// }
+
+// export default App;
+
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useContext } from "react";
+
 import Login from "./pages/Login.jsx";
 import Home from "./pages/Home.jsx";
 import Register from "./pages/Register.jsx";
 import ProtectedRoute from "./pages/ProtectedRoute.jsx";
+
 import AuthProvider from "./context/AuthProvider.jsx";
+import { AuthContext } from "./context/AuthContext";
+
 import MenuPage from "./pages/Menu.jsx";
 import AddDish from "./pages/AddDish.jsx";
 import EditDish from "./pages/EditDish.jsx";
@@ -92,49 +160,136 @@ import CartPage from "./pages/Cart.jsx";
 import Checkout from "./pages/Checkout.jsx";
 import AskAI from "./pages/AskAI.jsx";
 
-function App() {
+import NavbarPublic from "./components/NavbarPublic";
+import NavbarPrivate from "./components/NavbarPrivate";
+import LandingPage from "./pages/LandingPage";
+
+function AppContent() {
+  const { user } = useContext(AuthContext);
+
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* default -> go to /login */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+    <BrowserRouter>
 
-          {/* public routes */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+      {/* 🔥 NAVBAR SWITCH */}
+      {/* Do NOT block UI when loading (401 is valid for logged-out users) */}
+      {user ? <NavbarPrivate /> : <NavbarPublic />}
 
-          {/* optional aliases so backend-like paths work in frontend */}
-          <Route path="/login_user" element={<Login />} />
-          <Route path="/register_user" element={<Register />} />
+      <Routes>
 
-          {/* protected */}
-          <Route
-            path="/home"
-            element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/menu" element={<ProtectedRoute><MenuPage/></ProtectedRoute>} />
-          <Route path="/add_item" element={<ProtectedRoute><AddDish/></ProtectedRoute>} />
-          <Route path="/modify_item/:id" element={<ProtectedRoute><EditDish/></ProtectedRoute>} />
-          <Route path="/view_item/:id" element={<ViewDish />} />
-          <Route path="/manage_users" element={<ManageUsers />} />
-          <Route path="/editusers/:id" element={<EditUser/>}/>
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/ask-ai" element={<AskAI />} />
+        {/* public landing page */}
+        <Route path="/" element={<LandingPage />} />
 
+        {/* public routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
+        {/* optional aliases so backend-like paths work in frontend */}
+        <Route path="/login_user" element={<Login />} />
+        <Route path="/register_user" element={<Register />} />
 
-          {/* fallback */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+        {/* protected */}
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/menu"
+          element={
+            <ProtectedRoute>
+              <MenuPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/add_item"
+          element={
+            <ProtectedRoute>
+              <AddDish />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/modify_item/:id"
+          element={
+            <ProtectedRoute>
+              <EditDish />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/view_item/:id"
+          element={
+            <ProtectedRoute>
+              <ViewDish />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/manage_users"
+          element={
+            <ProtectedRoute>
+              <ManageUsers />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/editusers/:id"
+          element={
+            <ProtectedRoute>
+              <EditUser />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute>
+              <CartPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/ask-ai"
+          element={
+            <ProtectedRoute>
+              <AskAI />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+
+      </Routes>
+    </BrowserRouter>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
+}
