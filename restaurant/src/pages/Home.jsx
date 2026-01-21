@@ -72,6 +72,7 @@ import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import "../styles/Home.css";
 
 export default function Home() {
   const { user } = useContext(AuthContext);
