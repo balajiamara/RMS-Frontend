@@ -38,6 +38,7 @@ html, body {
   font-size: 3.5rem;
   font-weight: bold;
   margin-bottom: 15px;
+  z-index: 1;
 }
 
 .hero-content h1 span {
@@ -47,4 +48,5 @@ html, body {
 .hero-content p {
   font-size: 1.2rem;
   opacity: 0.9;
+  z-index: 1;
 }
