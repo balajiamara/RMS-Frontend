@@ -72,6 +72,7 @@ import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import plate from "../assets/plates.jpg";
 import "../styles/Home.css";
 
 export default function Home() {
@@ -92,6 +93,10 @@ export default function Home() {
   }, []);
 
   return (
+    <section
+    className="plate-bg"
+    style={{ backgroundImage: `url(${plate})` }}
+    >
     <div style={{ padding: 20 }}>
       <div
         style={{
@@ -101,6 +106,11 @@ export default function Home() {
           marginBottom: 20,
         }}
       >
+        {/* Overlay */}
+      <div className="overlay"></div>
+
+      {/* Content */}
+      <div className="content" style={{ padding: 20 }}>    
         <div>
           <h1>Welcome {user?.username}</h1>
           <p>Role: {user?.role}</p>
@@ -128,6 +138,8 @@ export default function Home() {
           </>
         )}
       </div>
+      </div>  
     </div>
+    </section>
   );
 }
