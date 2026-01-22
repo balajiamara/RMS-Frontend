@@ -106,7 +106,7 @@ export default function Home() {
           marginBottom: 20,
         }}
       >
-        {/* Overlay */}
+      {/* Overlay */}
       <div className="overlay"></div>
 
       {/* Content */}
