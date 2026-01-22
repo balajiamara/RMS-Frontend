@@ -1,5 +1,7 @@
+
 /* Make sure body takes full height */
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -9,8 +11,8 @@ html, body {
 .hero {
   position: relative;
   width: 100%;
-  height: 100vh;              /* FULL SCREEN */
-  background-size: cover;     /* COVER ENTIRE AREA */
+  min-height: 100vh;          /* FULL SCREEN */
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 
@@ -24,29 +26,31 @@ html, body {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+  pointer-events: none;      /* ✅ buttons work */
 }
 
-/* TEXT CONTENT */
+/* CONTENT ABOVE OVERLAY */
 .hero-content {
-  position: relative;         /* ABOVE OVERLAY */
+  position: relative;        /* REQUIRED for z-index */
+  z-index: 2;                /* ABOVE overlay */
   text-align: center;
   color: white;
   padding: 20px;
 }
 
+/* TEXT STYLES */
 .hero-content h1 {
   font-size: 3.5rem;
-  font-weight: bold;
+  font-weight: 700;
   margin-bottom: 15px;
-  z-index: 1;
 }
 
 .hero-content h1 span {
-  color: #facc15;             /* yellow */
+  color: #facc15;
 }
 
 .hero-content p {
   font-size: 1.2rem;
   opacity: 0.9;
-  z-index: 1;
 }
