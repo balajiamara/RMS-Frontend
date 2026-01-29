@@ -161,6 +161,7 @@ export default function MenuPage() {
   // Search & Filter state
   const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("");
+  const [dishType, setDishType] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
 
@@ -175,6 +176,7 @@ export default function MenuPage() {
       const params = new URLSearchParams();
       if (filters.search) params.append("search", filters.search);
       if (filters.category) params.append("category", filters.category);
+      if (filters.dishType) params.append("dish_type", filters.dishType);
       if (filters.minPrice) params.append("min_price", filters.minPrice);
       if (filters.maxPrice) params.append("max_price", filters.maxPrice);
 
@@ -224,6 +226,7 @@ export default function MenuPage() {
       fetchMenu({
         search: searchTerm,
         category: category,
+        dishType: dishType,
         minPrice: minPrice,
         maxPrice: maxPrice,
       });
@@ -232,7 +235,7 @@ export default function MenuPage() {
     setDebounceTimer(timer);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm, category, minPrice, maxPrice]);
+  }, [searchTerm, category, dishType, minPrice, maxPrice]);
 
   // Initial cart check
   useEffect(() => {
@@ -367,11 +370,27 @@ export default function MenuPage() {
           }}
         >
           <option value="">All Categories</option>
-          <option value="veg">Veg</option>
-          <option value="non-veg">Non-Veg</option>
-          <option value="beverages">Beverages</option>
-          <option value="desserts">Desserts</option>
+          <option value="soups">Soups</option>
           <option value="starters">Starters</option>
+          <option value="main course">Main Course</option>
+          <option value="desserts">Desserts</option>
+          <option value="beverages">Beverages</option>
+        </select>
+
+        {/* Dish Type Filter */}
+        <select
+          value={dishType}
+          onChange={(e) => setDishType(e.target.value)}
+          style={{
+            padding: "8px 12px",
+            borderRadius: 6,
+            border: "1px solid #ddd",
+            background: "#fff",
+          }}
+        >
+          <option value="">All Types</option>
+          <option value="Veg">🥬 Veg</option>
+          <option value="Non-Veg">🍖 Non-Veg</option>
         </select>
 
         {/* Price Range */}
@@ -405,11 +424,12 @@ export default function MenuPage() {
         </div>
 
         {/* Clear Filters */}
-        {(searchTerm || category || minPrice || maxPrice) && (
+        {(searchTerm || category || dishType || minPrice || maxPrice) && (
           <button
             onClick={() => {
               setSearchTerm("");
               setCategory("");
+              setDishType("");
               setMinPrice("");
               setMaxPrice("");
             }}
