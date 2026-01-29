@@ -11,7 +11,7 @@ function BasicExample() {
       <Container>
 
         {/* Left side: Logo + Restaurant Name */}
-        <Navbar.Brand href="/" className="d-flex align-items-center gap-2">
+        <Navbar.Brand href="/home" className="d-flex align-items-center gap-2">
           <img
             src={logo}
             alt="Thindaam Logo"
@@ -32,6 +32,8 @@ function BasicExample() {
           <Nav className="ms-auto text-center gap-3">
 
             <Nav.Link href="/menu">Menu</Nav.Link>
+            <Nav.Link href="/orders">My Orders</Nav.Link>
+            <Nav.Link href="/cart">🛒 Cart</Nav.Link>
             <Nav.Link href="/contact">Contact Us</Nav.Link>
 
             {/* User Profile Dropdown */}

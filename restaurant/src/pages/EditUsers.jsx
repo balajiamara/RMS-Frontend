@@ -118,7 +118,7 @@ export default function EditUser() {
 
         <button
           type="button"
-          onClick={() => nav("/")}
+          onClick={() => nav("/home")}
           style={{
             background: "gray",
             padding: "8px 12px",

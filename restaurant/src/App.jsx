@@ -159,6 +159,7 @@ import ManageUsers from "./pages/ManageUsers.jsx";
 import CartPage from "./pages/Cart.jsx";
 import Checkout from "./pages/Checkout.jsx";
 import AskAI from "./pages/AskAI.jsx";
+import OrderHistory from "./pages/OrderHistory.jsx";
 
 import NavbarPublic from "./components/NavbarPublic";
 import NavbarPrivate from "./components/NavbarPrivate";
@@ -274,6 +275,15 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <AskAI />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              <OrderHistory />
             </ProtectedRoute>
           }
         />

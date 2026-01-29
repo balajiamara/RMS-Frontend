@@ -137,14 +137,14 @@
 // }
 
 
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 const API_BASE =
-  import.meta.env.VITE_API_BASE?.replace(/\/+$/, "") || 
-  "https://rms-i0wj.onrender.com" 
-  // "http://127.0.0.1:8000";
+  import.meta.env.VITE_API_BASE?.replace(/\/+$/, "") ||
+  "https://rms-i0wj.onrender.com";
+
 export default function MenuPage() {
   const { user } = useContext(AuthContext);
   const isAdmin = user?.role?.toLowerCase() === "admin";
@@ -156,13 +156,32 @@ export default function MenuPage() {
 
   // cart-related state
   const [cartHasItems, setCartHasItems] = useState(false);
-  const [addingId, setAddingId] = useState(null); // which dish is currently being added
+  const [addingId, setAddingId] = useState(null);
 
-  async function fetchMenu() {
+  // Search & Filter state
+  const [searchTerm, setSearchTerm] = useState("");
+  const [category, setCategory] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+
+  // Debounce timer ref
+  const [debounceTimer, setDebounceTimer] = useState(null);
+
+  const fetchMenu = useCallback(async (filters = {}) => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`${API_BASE}/show_item/`, {
+      // Build query params
+      const params = new URLSearchParams();
+      if (filters.search) params.append("search", filters.search);
+      if (filters.category) params.append("category", filters.category);
+      if (filters.minPrice) params.append("min_price", filters.minPrice);
+      if (filters.maxPrice) params.append("max_price", filters.maxPrice);
+
+      const queryString = params.toString();
+      const url = `${API_BASE}/show_item/${queryString ? `?${queryString}` : ""}`;
+
+      const res = await fetch(url, {
         method: "GET",
         credentials: "include",
       });
@@ -171,7 +190,6 @@ export default function MenuPage() {
         throw new Error(err.error || err.msg || `Status ${res.status}`);
       }
       const data = await res.json();
-      // normalize: array or { menu: [...] }
       const normalized = Array.isArray(data) ? data : (data.menu || data.results || []);
       setItems(normalized);
     } catch (e) {
@@ -180,7 +198,7 @@ export default function MenuPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
   async function checkCart() {
     try {
@@ -198,10 +216,27 @@ export default function MenuPage() {
     }
   }
 
+  // Debounced search - triggers 400ms after user stops typing
   useEffect(() => {
-    fetchMenu();
-    checkCart();
+    if (debounceTimer) clearTimeout(debounceTimer);
+
+    const timer = setTimeout(() => {
+      fetchMenu({
+        search: searchTerm,
+        category: category,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+      });
+    }, 400);
+
+    setDebounceTimer(timer);
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm, category, minPrice, maxPrice]);
+
+  // Initial cart check
+  useEffect(() => {
+    checkCart();
   }, []);
 
   async function handleDelete(id) {
@@ -290,6 +325,107 @@ export default function MenuPage() {
       >
         🤖 Ask AI
       </button>
+
+      {/* Search & Filter Section */}
+      <div
+        style={{
+          marginTop: 20,
+          marginBottom: 20,
+          padding: 16,
+          background: "#f8f9fa",
+          borderRadius: 8,
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 12,
+          alignItems: "center",
+        }}
+      >
+        {/* Search Input */}
+        <input
+          type="text"
+          placeholder="🔍 Search dishes..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{
+            padding: "8px 12px",
+            borderRadius: 6,
+            border: "1px solid #ddd",
+            minWidth: 200,
+            flex: "1 1 200px",
+          }}
+        />
+
+        {/* Category Filter */}
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          style={{
+            padding: "8px 12px",
+            borderRadius: 6,
+            border: "1px solid #ddd",
+            background: "#fff",
+          }}
+        >
+          <option value="">All Categories</option>
+          <option value="veg">Veg</option>
+          <option value="non-veg">Non-Veg</option>
+          <option value="beverages">Beverages</option>
+          <option value="desserts">Desserts</option>
+          <option value="starters">Starters</option>
+        </select>
+
+        {/* Price Range */}
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <span style={{ fontSize: 13, color: "#666" }}>Price:</span>
+          <input
+            type="number"
+            placeholder="Min"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+            style={{
+              padding: "8px",
+              borderRadius: 6,
+              border: "1px solid #ddd",
+              width: 70,
+            }}
+          />
+          <span>-</span>
+          <input
+            type="number"
+            placeholder="Max"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
+            style={{
+              padding: "8px",
+              borderRadius: 6,
+              border: "1px solid #ddd",
+              width: 70,
+            }}
+          />
+        </div>
+
+        {/* Clear Filters */}
+        {(searchTerm || category || minPrice || maxPrice) && (
+          <button
+            onClick={() => {
+              setSearchTerm("");
+              setCategory("");
+              setMinPrice("");
+              setMaxPrice("");
+            }}
+            style={{
+              padding: "8px 12px",
+              background: "#6c757d",
+              color: "#fff",
+              border: "none",
+              borderRadius: 6,
+              cursor: "pointer",
+            }}
+          >
+            Clear Filters
+          </button>
+        )}
+      </div>
 
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
